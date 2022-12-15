@@ -221,7 +221,7 @@ get_metadata <- function(export_data, r, about_data,
       if (is_scale_in_df("CSD", export_data$df) && 
           variables_row$source == "Canadian census") {
         paste0("<p style = 'font-size: 1.45rem;'>",
-               cc_t(r = r, "For the City of Montreal's boroughs, ",
+               cc_t(r = r, "For the City of Toronto's wards, ",
                     "`{variables_row$var_title}` is ",
                     "spatially interpolated from {from}s."),
                "</p>")

@@ -158,7 +158,7 @@ susBanner <- function() {
     tags$div(class = "sus-banner-bg sus-bg-img-map"),
     tags$div(class = "sus-banner-bg sus-bg-img-skyline"),
     tags$h1(class = "sus-brand sus-banner-text", "Curbcut"),
-    tags$h4(class = "sus-brand sus-banner-text-city", cc_t("Montreal"))
+    tags$h4(class = "sus-brand sus-banner-text-city", "Toronto")
   ))
 }
 

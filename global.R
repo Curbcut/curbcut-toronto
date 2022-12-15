@@ -4,6 +4,7 @@
 # Platform dependant ------------------------------------------------------
 
 site_name <- "Curbcut Toronto"
+city_name <- "Toronto"
 site_url <- "https://toronto.curbcut.ca"
 stories_page <- "Toronto stories"
 tileset_prefix <- "to"
