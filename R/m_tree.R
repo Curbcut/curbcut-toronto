@@ -1,27 +1,29 @@
-### CANALE PAGE ################################################################
+### TREE PAGE ##################################################################
 
 # GLOBAL ------------------------------------------------------------------
 
-`canale_default_region` <- unlist(modules$regions[modules$id == "canale"])[1]
-`canale_mzp` <-
-  eval(parse(text = paste0("map_zoom_levels_", `canale_default_region`)))
+`tree_default_region` <- unlist(modules$regions[modules$id == "tree"])[1]
+`tree_mzp` <-
+  eval(parse(text = paste0("map_zoom_levels_", `tree_default_region`)))
 
 
 # UI ----------------------------------------------------------------------
 
-`canale_UI` <- function(id) {
+`tree_UI` <- function(id) {
   id_map <- paste0(id, "-map")
 
   tagList(
     # Sidebar
     sidebar_UI(
       NS(id, id),
-      susSidebarWidgets(),
+      susSidebarWidgets(
+        select_var_UI(NS(id, id), var_list = c("tree_count", "tree_ppt", "tree_sqkm"))
+      ),
       bottom = div(
         class = "bottom_sidebar",
         tagList(
           legend_UI(NS(id, id)),
-          zoom_UI(NS(id, id), `canale_mzp`)
+          zoom_UI(NS(id, id), `tree_mzp`)
         )
       )
     ),
@@ -42,12 +44,12 @@
 
 # Server ------------------------------------------------------------------
 
-`canale_server` <- function(id, r) {
+`tree_server` <- function(id, r) {
   moduleServer(id, function(input, output, session) {
     id_map <- paste0(id, "-map")
 
     # Initial reactives
-    zoom_string <- reactiveVal(get_zoom_string(map_zoom, `canale_mzp`))
+    zoom_string <- reactiveVal(get_zoom_string(map_zoom, `tree_mzp`))
     poi <- reactiveVal(NULL)
 
     # Map
@@ -70,7 +72,7 @@
     # Map zoom levels change depending on r$geo()
     map_zoom_levels <- eventReactive(r$geo(), {
       get_zoom_levels(
-        default = `canale_default_region`,
+        default = `tree_default_region`,
         geo = r$geo(),
         var_left = isolate(var_left())
       )
@@ -122,10 +124,16 @@
       bindEvent(tile(), zoom_string())
 
     # Time
-    time <- reactive("2016")
+    time <- reactive("2019")
 
     # Left variable
-    var_left <- reactive(paste("canale", time(), sep = "_"))
+    var_left <- select_var_server(
+      id = id,
+      r = r,
+      var_list = reactive(make_dropdown(only_vars = c("tree_count", "tree_ppt", "tree_sqkm"),
+                                        only = NULL)),
+      time = time
+    )
 
     # Right variable / compare panel
     var_right <- compare_server(
@@ -147,7 +155,7 @@
           "lang_french_only", "lang_eng_only", "lang_french_eng",
           "lang_no_official", "age_0_14", "age_15_64",
           "age_65_plus", "edu_bachelor_above", "edu_no_degree",
-          "canbics"
+          "canale", "canbics"
         ),
         only = NULL,
         exclude = NULL, compare = TRUE

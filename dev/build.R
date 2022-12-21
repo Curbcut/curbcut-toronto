@@ -55,7 +55,7 @@ census_scales <-
                       levels = c("CSD", "CT", "DA"),
                       crs = crs)
 
-# Switch the City of Montreal for the boroughs
+# Switch the City of Toronto for the Wards
 wards <- sf::st_read("dev/data/geometry/WARD_WGS84.shp")
 wards <- wards[c("AREA_NAME")]
 names(wards)[1] <- "name"
@@ -174,6 +174,17 @@ scales_variables_modules <-
              crs = crs,
              region_DA_IDs = census_scales$DA$ID)
 
+
+# Toronto-specific pages
+scales_variables_modules <- 
+  build_and_append_tree(scales_variables_modules = scales_variables_modules, 
+                        crs = crs)
+scales_variables_modules <- 
+  build_and_append_tree_sqkm(scales_variables_modules = scales_variables_modules, 
+                             crs = crs)
+
+
+
 scales_variables_modules$scales <- 
   cc.buildr::reorder_columns(scales_variables_modules$scales)
 
@@ -212,14 +223,14 @@ map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
 #                                 column_to_select = "DA_ID", 
 #                                 IDs = census_scales$DA$ID)
 # qs::qsave(street, "dev/data/built/street.qs")
-street <- qs::qread("dev/data/built/street.qs")
-
-tileset_streets(master_polygon = base_polygons$master_polygon,
-                street = street,
-                crs = crs,
-                prefix = "to",
-                username = "sus-mcgill",
-                access_token = .cc_mb_token)
+# street <- qs::qread("dev/data/built/street.qs")
+# 
+# tileset_streets(master_polygon = base_polygons$master_polygon,
+#                 street = street,
+#                 crs = crs,
+#                 prefix = "to",
+#                 username = "sus-mcgill",
+#                 access_token = .cc_mb_token)
 
 
 
@@ -228,11 +239,6 @@ tileset_streets(master_polygon = base_polygons$master_polygon,
 # variables <- scales_variables_modules$variables
 # source("dev/other/dyk.R")
 # qs::qsave(dyk, "data/dyk.qs")
-
-
-# Translation -------------------------------------------------------------
-
-source("dev/translation/build_translation.R", encoding = "utf-8")
 
 
 # Produce colours ---------------------------------------------------------
@@ -282,8 +288,10 @@ qs::qsave(scales_variables_modules$modules, file = "data/modules.qs")
 qs::qsave(scales_dictionary, file = "data/scales_dictionary.qs")
 qs::qsave(regions_dictionary, file = "data/regions_dictionary.qs")
 qs::qsave(scales_variables_modules$scales[[1]][[1]] |> 
+            sf::st_transform(crs) |> 
             sf::st_union() |> 
             sf::st_centroid() |> 
+            sf::st_transform(4326) |> 
             sf::st_coordinates() |> 
             as.numeric(), file = "data/map_loc.qs")
 tictoc::toc()
