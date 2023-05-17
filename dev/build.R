@@ -80,10 +80,10 @@ scales_dictionary[1, ] <- list(scale = "CSD",
 
 
 ### Build building scale
-# # # From MySQL
-# # building <- cc.data::db_read_long_table(table = "buildings",
-# #                                          DA_ID = census_scales$DA$ID)
-# # qs::qsave(building, file = "dev/data/built/building.qs")
+# # From MySQL
+# building <- cc.data::db_read_long_table(table = "buildings",
+#                                          DA_ID = census_scales$DA$ID)
+# qs::qsave(building, file = "dev/data/built/building.qs")
 # # From Local
 # building <- qs::qread("dev/data/canada_buildings.qs")
 # building <- building[building$DA_ID %in% census_scales$DA$ID, ]
@@ -162,7 +162,8 @@ census_variables <- get_census_vectors_details()
 
 scales_variables_modules <-
   ru_vac_rate(scales_variables_modules = scales_variables_modules,
-              crs = crs, geo_uid = cancensus_cma_code,
+              crs = crs, 
+              geo_uid = cancensus_cma_code,
               approximate_name_match = FALSE)
 scales_variables_modules <-
   ru_canale(scales_variables_modules = scales_variables_modules,
@@ -171,7 +172,7 @@ scales_variables_modules <-
 
 # # Add access to amenities module
 # traveltimes <-
-#   accessibility_get_travel_times(region_DA_IDs = census_scales$DA$ID)
+# accessibility_get_travel_times(region_DA_IDs = census_scales$DA$ID)
 # qs::qsave(traveltimes, "dev/data/built/traveltimes.qs")
 traveltimes <- qs::qread("dev/data/built/traveltimes.qs")
 
@@ -179,7 +180,7 @@ future::plan(future::multisession(), workers = 4)
 scales_variables_modules <-
   ba_accessibility_points(scales_variables_modules = scales_variables_modules,
                           region_DA_IDs = census_scales$DA$ID,
-                          traveltimes = traveltimes,
+                          traveltimes = traveltimes, 
                           crs = crs)
 
 save.image("dev/data/built/scales_variables_modules.RData")
@@ -187,8 +188,14 @@ load("dev/data/built/scales_variables_modules.RData")
 
 
 # Toronto-specific pages
-
-cc.buildr::create_data_script("tree")
+scales_variables_modules <- 
+  build_and_append_tree_count(scales_variables_modules = scales_variables_modules,
+                              DA_table = census_scales$DA,
+                              crs = crs)
+scales_variables_modules <- 
+  build_and_append_tree_sqkm(scales_variables_modules = scales_variables_modules,
+                              DA_table = census_scales$DA,
+                              crs = crs)
 
 
 
@@ -212,33 +219,32 @@ map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
 
 # Tilesets ----------------------------------------------------------------
 
-tileset_upload_all(all_scales = scales_variables_modules$scales,
-                   map_zoom_levels = map_zoom_levels,
-                   prefix = "to",
-                   tweak_max_zoom = tibble::tibble(),
-                   username = "sus-mcgill",
-                   access_token = .cc_mb_token)
-
-tileset_labels(
-  scales = scales_variables_modules$scales, 
-  crs = crs,
-  prefix = "to",
-  username = "sus-mcgill",
-  access_token = .cc_mb_token)
-
-# street <- cc.data::db_read_data(table = "streets",
-#                                 column_to_select = "DA_ID",
-#                                 IDs = census_scales$DA$ID)
-# qs::qsave(street, "dev/data/built/street.qs")
-street <- qs::qread("dev/data/built/street.qs")
-
-tileset_streets(master_polygon = base_polygons$master_polygon,
-                street = street,
-                crs = crs,
-                prefix = "to",
-                username = "sus-mcgill",
-                access_token = .cc_mb_token)
-
+# tileset_upload_all(all_scales = scales_variables_modules$scales,
+#                    map_zoom_levels = map_zoom_levels,
+#                    prefix = "to",
+#                    tweak_max_zoom = tibble::tibble(),
+#                    username = "sus-mcgill",
+#                    access_token = .cc_mb_token)
+# 
+# tileset_labels(
+#   scales = scales_variables_modules$scales, 
+#   crs = crs,
+#   prefix = "to",
+#   username = "sus-mcgill",
+#   access_token = .cc_mb_token)
+# 
+# # street <- cc.data::db_read_data(table = "streets",
+# #                                 column_to_select = "DA_ID",
+# #                                 IDs = census_scales$DA$ID)
+# # qs::qsave(street, "dev/data/built/street.qs")
+# street <- qs::qread("dev/data/built/street.qs")
+# 
+# tileset_streets(master_polygon = base_polygons$master_polygon,
+#                 street = street,
+#                 crs = crs,
+#                 prefix = "to",
+#                 username = "sus-mcgill",
+#                 access_token = .cc_mb_token)
 
 
 # Did you know ------------------------------------------------------------
@@ -252,23 +258,36 @@ tileset_streets(master_polygon = base_polygons$master_polygon,
 
 colours_dfs <- cc.buildr::build_colours()
 
-# Add natural inf data colours
-colours_dfs$viridis_25 <- 
-  tibble::tibble(group = as.character(26:50),
-                 fill = scales::viridis_pal()(25))
 qs::qsave(colours_dfs, "data/colours_dfs.qs")
 
 
 # Write stories -----------------------------------------------------------
 
-stories <- build_stories()
-stories_mapping <- stories$stories_mapping
-stories <- stories$stories
-qs::qsavem(stories, stories_mapping, file = "data/stories.qsm")
-stories_create_tileset(stories = stories,
-                       prefix = "mtl",
-                       username = "sus-mcgill",
-                       access_token = .cc_mb_token)
+# stories <- build_stories()
+# stories_mapping <- stories$stories_mapping
+# stories <- stories$stories
+# qs::qsavem(stories, stories_mapping, file = "data/stories.qsm")
+# stories_create_tileset(stories = stories,
+#                        prefix = "mtl",
+#                        username = "sus-mcgill",
+#                        access_token = .cc_mb_token)
+
+scales_variables_modules$modules <-
+  scales_variables_modules$modules |>
+  add_module(
+    id = "stories",
+    theme = NA,
+    nav_title = "Toronto stories",
+    title_text_title = "Toronto stories",
+    title_text_main = paste0(
+      "<p>Explore stories about urban sustainability and planning in Toronto. Learn ",
+      "about stories rooted in specific geographic locations or those that ",
+      "have an impact on the whole city."),
+    title_text_extra = paste0(
+      "<p>These narrative case studies are written by Curbcut contributors."),
+    metadata = FALSE,
+    dataset_info = ""
+  )
 
 # Place explorer page ----------------------------------------------------
 

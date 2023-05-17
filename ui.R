@@ -104,8 +104,6 @@ ui <- function(request) {
                         tabPanel(curbcut::cc_t("Authors"), authors_UI("authors"), value = "authors")),
              collapsible = TRUE,
              inputs = list(
-               # Language toggle
-               curbcut::language_UI(),
                # Actions dropdown
                curbcut::settings_UI()
              )
