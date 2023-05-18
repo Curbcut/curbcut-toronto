@@ -58,7 +58,7 @@ ui <- function(request) {
     # Curbcut scripts
     curbcut::use_curbcut_cookie(),
     curbcut::use_curbcut_js(),
-    curbcut::use_curbcut_css(lang_init = TRUE),
+    curbcut::use_curbcut_css(lang_init = FALSE),
     
     # Google analytics
     tags$head(includeHTML("www/google_analytics.html")),

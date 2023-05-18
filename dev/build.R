@@ -370,3 +370,4 @@ placeex_main_card_rmd(scales_variables_modules = scales_variables_modules,
 
 # renv::activate()
 # heroku_deploy("cc-toronto") # Production
+# heroku_deploy("cc-toronto-2") # Dev
