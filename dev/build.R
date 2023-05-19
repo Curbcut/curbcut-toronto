@@ -330,9 +330,15 @@ save_all_scales_qs(data_folder = "data/",
 # Save .qsm ---------------------------------------------------------------
 
 save_short_tables_qs(data_folder = "data/", 
-                     all_scales = scales_variables_modules$scales)
+                     all_scales = scales_variables_modules$scales,
+                     skip_scales = c("building"))
 save_geometry_export(data_folder = "data/", 
                      all_scales = scales_variables_modules$scales)
+
+
+# Save large dfs as sqlite ------------------------------------------------
+
+save_bslike_sqlite("building", all_scales = scales_variables_modules$scales)
 
 
 # Save other global data --------------------------------------------------
