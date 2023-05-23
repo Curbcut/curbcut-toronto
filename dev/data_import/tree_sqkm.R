@@ -104,12 +104,9 @@ build_and_append_tree_sqkm <- function(scales_variables_modules, DA_table, crs) 
 
 
   # Modules table -----------------------------------------------------------
-
-  modules <- 
-    scales_variables_modules$modules[scales_variables_modules$modules$id != "tree", ]
   
   modules <-
-    modules |>
+    scales_variables_modules$modules |>
     add_module(
       id = "tree",
       theme = "Environment",
@@ -132,7 +129,7 @@ build_and_append_tree_sqkm <- function(scales_variables_modules, DA_table, crs) 
       regions = unique(data_interpolated$regions),
       metadata = TRUE,
       dataset_info = paste0(""), 
-      var_left = c("tree_count", "tree_per1k", "tree_sqkm"), 
+      var_left = c("tree_count", "tree_per1k", "tree_sqkm", "tree_ppo"), 
       dates = "2019", 
       main_dropdown_title = "Data grouping", 
       var_right = variables$var_code[variables$source == "Canadian census" &

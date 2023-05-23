@@ -14,15 +14,17 @@ build_and_append_tree_count <- function(scales_variables_modules, DA_table, crs)
   data <- merge(data, sf::st_drop_geometry(DA_table[c("ID", "population")]))
   data$tree_per1k <- data$tree_count / data$population * 1000
   data$tree_per1k[data$tree_per1k == Inf] <- NA
-  
+  data$tree_ppo <- data$population / data$tree_count
+  data$tree_ppo[is.infinite(data$tree_ppo)] <- NA
+
   names(data)[1] <- "DA_ID"
   
-  data <- data[c("DA_ID", "tree_count", "tree_per1k")]
-  names(data)[2:3] <- paste0(names(data)[2:3], "_2019")
+  data <- data[c("DA_ID", "tree_count", "tree_per1k", "tree_ppo")]
+  names(data)[2:4] <- paste0(names(data)[2:4], "_2019")
   
   # Get list of data variables ----------------------------------------------
 
-  average_vars <- c("tree_per1k_2019")
+  average_vars <- c("tree_per1k_2019", "tree_ppo_2019")
   additive_vars <- c("tree_count_2019")
   vars <- c(average_vars, additive_vars)
 
@@ -51,7 +53,8 @@ build_and_append_tree_count <- function(scales_variables_modules, DA_table, crs)
   # Make a types named list -------------------------------------------------
   
   types <- list(tree_per1k = "per1k",
-                tree_count = "count")
+                tree_count = "count",
+                tree_ppo = "ppo")
   
   
   # Calculate breaks --------------------------------------------------------
@@ -69,11 +72,12 @@ build_and_append_tree_count <- function(scales_variables_modules, DA_table, crs)
   
   # Make a parent string the same way as the types
   parent_strings <- list(tree_per1k = "population",
-                         tree_count = "count")
+                         tree_count = "count",
+                         tree_ppo = "population")
   
   region_vals <- variables_get_region_vals(
     scales = data_interpolated$scales,
-    vars = c("tree_count", "tree_per1k"),
+    vars = c("tree_count", "tree_per1k", "tree_ppo"),
     types = types,
     parent_strings = parent_strings,
     breaks = with_breaks$q5_breaks_table)
@@ -130,28 +134,31 @@ build_and_append_tree_count <- function(scales_variables_modules, DA_table, crs)
                        "just about average", "unusually dense",
                        "exceptionally dense")
     )
-
-
-  # Modules table -----------------------------------------------------------
-
-  modules <-
-      scales_variables_modules$modules |>
-        add_module(
-          id = "tree",
-          theme = "Environment",
-          nav_title = "Tree",
-          title_text_title = "Toronto Tree",
-          title_text_main = paste0(""),
-          title_text_extra = paste0(""),
-          regions = unique(data_interpolated$regions),
-          metadata = TRUE,
-          dataset_info = paste0(""), 
-          var_left = c("tree_count", "tree_per1k"), 
-          dates = "2019", 
-          main_dropdown_title = "Data grouping", 
-          var_right = variables$var_code[variables$source == "Canadian census" &
-                                           !is.na(variables$parent_vec)]
-        )
+  
+  variables <-
+    add_variable(
+      variables = variables,
+      var_code = "tree_ppo",
+      type = "ppo",
+      var_title = "People per tree",
+      var_short = "PPT",
+      explanation = "the number of people per tree",
+      exp_q5 = "tree",
+      theme = "Environment",
+      parent_vec = NA, 
+      avail_df = data_interpolated$avail_df, 
+      pe_include = TRUE,
+      region_values = region_vals$tree_ppo,
+      private = FALSE,
+      dates = with_breaks$avail_dates[["tree_ppo"]],
+      breaks_q3 = with_breaks$q3_breaks_table[["tree_ppo"]],
+      breaks_q5 = with_breaks$q5_breaks_table[["tree_ppo"]],
+      source = "City of Toronto's open data portal",
+      interpolated = data_interpolated$interpolated_ref,
+      rankings_chr = c("exceptionally sparse", "unusually sparse",
+                       "just about average", "unusually dense",
+                       "exceptionally dense")
+    )
 
 
   # Return ------------------------------------------------------------------

@@ -349,6 +349,9 @@ qs::qsave(scales_dictionary, file = "data/scales_dictionary.qs")
 qs::qsave(regions_dictionary, file = "data/regions_dictionary.qs")
 tictoc::toc()
 
+# Write data to AWS bucket
+cc.data::bucket_write_folder(folder = "data", bucket = "curbcut.toronto.data")
+
 
 # Place explorer content creation -----------------------------------------
 
