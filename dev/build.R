@@ -198,6 +198,11 @@ scales_variables_modules <-
                               crs = crs)
 
 
+scales_variables_modules <- 
+  build_and_append_green_space_pct(scales_variables_modules = scales_variables_modules,
+                             DA_table = census_scales$DA,
+                             crs = crs)
+
 
 # Post process
 scales_variables_modules$scales <- 
@@ -212,9 +217,9 @@ scales_variables_modules$scales <-
 
 # Map zoom levels ---------------------------------------------------------
 
-map_zoom_levels <- map_zoom_levels_create_all(all_tables = all_tables)
+#map_zoom_levels <- map_zoom_levels_create_all(all_tables = all_tables)
 
-map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
+#map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
 
 
 # Tilesets ----------------------------------------------------------------
@@ -256,9 +261,9 @@ map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
 
 # Produce colours ---------------------------------------------------------
 
-colours_dfs <- cc.buildr::build_colours()
+#colours_dfs <- cc.buildr::build_colours()
 
-qs::qsave(colours_dfs, "data/colours_dfs.qs")
+#qs::qsave(colours_dfs, "data/colours_dfs.qs")
 
 
 # Write stories -----------------------------------------------------------

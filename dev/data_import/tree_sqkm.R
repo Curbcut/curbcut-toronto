@@ -3,7 +3,6 @@
 build_and_append_tree_sqkm <- function(scales_variables_modules, DA_table, crs) {
 
   # Read and prepare data ---------------------------------------------------
-
   data <- sf::read_sf("dev/data/tree/toronto_tree_by_da.shp")
   data <- sf::st_drop_geometry(data)
   data <- data[, c("DAUID", "count")]
