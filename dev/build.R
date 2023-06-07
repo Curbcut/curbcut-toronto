@@ -188,6 +188,9 @@ load("dev/data/built/scales_variables_modules.RData")
 
 
 # Toronto-specific pages
+
+
+
 scales_variables_modules <- 
   build_and_append_tree_count(scales_variables_modules = scales_variables_modules,
                               DA_table = census_scales$DA,
@@ -219,32 +222,32 @@ map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
 
 # Tilesets ----------------------------------------------------------------
 
-# tileset_upload_all(all_scales = scales_variables_modules$scales,
-#                    map_zoom_levels = map_zoom_levels,
-#                    prefix = "to",
-#                    tweak_max_zoom = tibble::tibble(),
-#                    username = "sus-mcgill",
-#                    access_token = .cc_mb_token)
-# 
-# tileset_labels(
-#   scales = scales_variables_modules$scales, 
-#   crs = crs,
-#   prefix = "to",
-#   username = "sus-mcgill",
-#   access_token = .cc_mb_token)
-# 
-# # street <- cc.data::db_read_data(table = "streets",
-# #                                 column_to_select = "DA_ID",
-# #                                 IDs = census_scales$DA$ID)
-# # qs::qsave(street, "dev/data/built/street.qs")
-# street <- qs::qread("dev/data/built/street.qs")
-# 
-# tileset_streets(master_polygon = base_polygons$master_polygon,
-#                 street = street,
-#                 crs = crs,
-#                 prefix = "to",
-#                 username = "sus-mcgill",
-#                 access_token = .cc_mb_token)
+# street <- cc.data::db_read_data(table = "streets",
+#                                 column_to_select = "DA_ID",
+#                                 IDs = census_scales$DA$ID)
+# qs::qsave(street, "dev/data/built/street.qs")
+street <- qs::qread("dev/data/built/street.qs")
+
+tileset_streets(master_polygon = base_polygons$master_polygon,
+                street = street,
+                crs = crs,
+                prefix = "to",
+                username = "sus-mcgill",
+                access_token = .cc_mb_token)
+
+tileset_upload_all(all_scales = scales_variables_modules$scales,
+                   map_zoom_levels = map_zoom_levels,
+                   prefix = "to",
+                   tweak_max_zoom = tibble::tibble(),
+                   username = "sus-mcgill",
+                   access_token = .cc_mb_token)
+
+tileset_labels(
+  scales = scales_variables_modules$scales,
+  crs = crs,
+  prefix = "to",
+  username = "sus-mcgill",
+  access_token = .cc_mb_token)
 
 
 # Did you know ------------------------------------------------------------
