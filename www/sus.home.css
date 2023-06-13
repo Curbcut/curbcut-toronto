@@ -22,7 +22,7 @@
 .sus-page-home .sus-page-content-section:first-child {
   min-height: var(--h-home-content);
   height: fit-content;
-  background-image: url('landing.jpg');
+  background-image: url('landing_toronto_transparent.jpg');
   background-size: cover;
   background-position: 50% 50%;
 }
