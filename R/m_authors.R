@@ -17,11 +17,11 @@ authors_UI <- function(id) {
                 curbcut::cc_t("Toronto Lead"), 
                 "team/photos/christoph_becker.jpg",
                 susAuthorBio(
-                  curbcut::cc_t("Christoph Becker is Professor at the Faculty",
+                  curbcut::cc_t("Christoph Becker is Professor at the Faculty ",
                                 "of Information and the School of the Environm",
                                 "ent at the University of Toronto and directs ",
                                 "the Digital Curation Institute. His research",
-                                " focuses on enacting meaningful change in",
+                                " focuses on enacting meaningful change in ",
                                 "computing to meet the urgent need for sustaina",
                                 "bility and social justice. He does that by work",
                                 "ing with others across fields like human comput",
