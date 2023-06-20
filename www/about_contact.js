@@ -7,7 +7,7 @@ $(document).ready(function() {
         // Check if the data-value attribute contains 'About'
         if ($(this).data("value").indexOf("About") !== -1) {
             // Get the corresponding dropdown menu and append the content
-            $(this).siblings('.dropdown-menu').append('<li><a href="mailto:contact@curbcut.ca">Contact</a></li>');
+            $(this).siblings('.dropdown-menu').append('<li><a href="mailto:toronto@curbcut.ca">Contact</a></li>');
             $(this).siblings('.dropdown-menu').append('<li id="newsletter"><a href="#">Newsletter</a></li>');
         }
     });

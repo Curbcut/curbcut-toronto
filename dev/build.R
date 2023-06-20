@@ -188,6 +188,9 @@ load("dev/data/built/scales_variables_modules.RData")
 invisible(lapply(list.files("dev/data_import", full.names = TRUE), source))
 
 # Toronto-specific pages
+
+
+
 scales_variables_modules <- 
   build_and_append_tree_sqkm(scales_variables_modules = scales_variables_modules,
                              DA_table = census_scales$DA,
@@ -223,20 +226,6 @@ scales_variables_modules$scales <-
 
 # Tilesets ----------------------------------------------------------------
 
-# tileset_upload_all(all_scales = scales_variables_modules$scales,
-#                    map_zoom_levels = map_zoom_levels,
-#                    prefix = "to",
-#                    tweak_max_zoom = tibble::tibble(),
-#                    username = "sus-mcgill",
-#                    access_token = .cc_mb_token)
-# 
-# tileset_labels(
-#   scales = scales_variables_modules$scales, 
-#   crs = crs,
-#   prefix = "to",
-#   username = "sus-mcgill",
-#   access_token = .cc_mb_token)
-# 
 # # street <- cc.data::db_read_data(table = "streets",
 # #                                 column_to_select = "DA_ID",
 # #                                 IDs = census_scales$DA$ID)
@@ -249,6 +238,21 @@ scales_variables_modules$scales <-
 #                 prefix = "to",
 #                 username = "sus-mcgill",
 #                 access_token = .cc_mb_token)
+# 
+# tileset_upload_all(all_scales = scales_variables_modules$scales,
+#                    map_zoom_levels = map_zoom_levels,
+#                    street = street,
+#                    prefix = "to",
+#                    tweak_max_zoom = tibble::tibble(),
+#                    username = "sus-mcgill",
+#                    access_token = .cc_mb_token)
+# 
+# tileset_labels(
+#   scales = scales_variables_modules$scales,
+#   crs = crs,
+#   prefix = "to",
+#   username = "sus-mcgill",
+#   access_token = .cc_mb_token)
 
 
 # Did you know ------------------------------------------------------------

@@ -93,8 +93,11 @@ susFooter <- function() {
   return(tags$div(class = "sus-page-footer",
     tags$div(class = "sus-page-footer-content",
       tags$div(class = "sus-page-footer-logos",
-        tags$a(href = "https://www.mcgill.ca/mssi/", target = "_blank",
+        tags$a(href = "https://www.mcgill.ca/mssi/", style = "display:inline-block;padding:5px", target = "_blank",
           tags$img(class = "sus-page-footer-logo", src = "mcgill-mssi-logo-final.png")
+        ),
+        tags$a(href = "https://dci.ischool.utoronto.ca/",style = "display:inline-block;padding:5px", target = "_blank",
+               tags$img(class = "sus-page-footer-logo", src = "dci_transparent.png")
         )
       ),
       tags$div(class = "sus-page-footer-links",
@@ -103,8 +106,8 @@ susFooter <- function() {
           tags$li(tags$a(href = NULL, style = "cursor:pointer;", 
                          onclick = "openTab('about_sus')", 
                          curbcut::cc_t("About"), curbcut::icon_material("info"))),
-          tags$li(tags$a(href = NULL, style = "cursor:pointer;", 
-                         onclick = "document.getElementById('contact').click();",
+          tags$li(tags$a(href = "mailto:toronto@curbcut.ca", style = "cursor:pointer;", 
+                         #onclick = "document.getElementById('contact').click();",
                          curbcut::cc_t("Contact/feedback"), curbcut::icon_material("mail"))),
           tags$li(tags$a(href = NULL, HTML("&nbsp;")))#curbcut::cc_t("Privacy Policy"))),
         )
