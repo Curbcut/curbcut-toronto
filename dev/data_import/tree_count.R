@@ -166,7 +166,8 @@ build_and_append_tree_count <- function(scales_variables_modules, DA_table, crs)
   return(list(
     scales = with_breaks$scales,
     variables = variables,
-    modules = modules
+    modules = scales_variables_modules$modules
   ))
 
 }
+

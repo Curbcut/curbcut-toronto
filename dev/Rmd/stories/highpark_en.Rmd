@@ -1,0 +1,41 @@
+---
+title: "Community Activism for a Car-Free High Park"
+subtitle: ""  
+output: html_document
+author: "Han Qiao, Faraz Gholizadeh"
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### The Context of High Park
+<p>High Park is both a paradise and a battleground. Recognized as one of the most environmentally significant areas, High Park preserves approximately two thirds of its terrain in a natural state. For residents in Toronto, it is also the largest public park to enjoy hiking trails, sports facilities and picnic areas. However, at the same time, it carries the conflict between cars, cyclists and pedestrians on who gets to access and govern the park.
+</p>
+
+```{r, echo=FALSE, fig.align = 'center',  out.width="50%", fig.cap="A photo of High Park. Credit to Benson Kua", warning=FALSE}
+
+knitr::include_graphics(here("dev/data/stories/raw_images/highpark/figure0.jpeg"))
+```
+
+<p>Starting from the summer of 2021, <a href="https://www.toronto.ca/city-government/planning-development/construction-new-facilities/parks-facility-plans-strategies/high-park-movement-strategy/">High Park Movement Strategy</a> was launched to reevaluate the travel network serving High Park to ensure safety, accessibility and ecological integrity considering the context of the city's growing population, changing travel patterns and the impacts of Covid-19. In spring 2020, <a href="https://www.toronto.ca/explore-enjoy/parks-gardens-beaches/high-park/">car-free weekends</a> were first introduced to provide more space for park visitors to safely physically distance. Visitor vehicles are not allowed to enter the park on weekends and public holidays.
+</p>
+
+<p>When the city was reevaluating what would be a strategy of car access to the High Park going forward, Car Free High Park campaign was launched by several advocates to advocate for the continuation of banning cars. The coalition was backed by more than 20 organizations ranging from environmental, health, accessibility and disability, equity and sustainability, street safety, urban design, active transportation and public transit advocacy. 
+</p>
+
+
+### The Car Free High Park Campaign
+<p>Faraz Gholizadeh was one of the advocates leading the campaign, who believed that the city needs to have a space for people to enjoy nature without motor traffic, air pollution, noise and threat of injury. In their petition, they asked “If a park can’t be car-free, then what hope do we have of prioritizing low-carbon modes of transportation, meeting our climate goals, and putting the health and safety of people first?”
+</p>
+
+```{r, echo=FALSE, fig.align = 'center', fig.cap="Car Free High Park coalition logo.", warning=FALSE}
+
+knitr::include_graphics(here("dev/data/stories/raw_images/highpark/figure1.jpeg"))
+```
+
+<p>To push forward the campaign, the Car Free High Park coalition drafted a letter to the city and launched an email and social media initiative. They utilized the <a href="https://www.toronto.ca/wp-content/uploads/2023/01/93b9-high-park-movement-strategy-engagement-summary-summer-2022.pdf">survey results</a> from the City to demonstrate that majority of park visitors agree that a car-free High Park will 1) make the park safer, 2) make the park more accessible and 3) improve the park’s natural environment. Additionally, the team continuously talked to the press to get their voice heard. Ultimately, their efforts led to more than 2,300 signatures for their petition. </p>
+
+<p>On May 12, 2023, the Toronto city council voted to continue keeping High Park closed to vehicles on weekends and holidays. Despite a fervent debate, the outcome stood firmly with 18 votes in favor and 7 against, reflecting the recognition of the benefits that a car-free High Park brings to the community. This decision stands as a testament to the power of grassroots efforts and how collective voices could shape policies and decisions of local government.
+</p>

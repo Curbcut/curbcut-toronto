@@ -1,7 +1,8 @@
 ## BUILD AND APPEND TREE_SQKM DATA #############################################
 
 build_and_append_tree_sqkm <- function(scales_variables_modules, DA_table, crs) {
-
+  
+  DA_table = census_scales$DA
   # Read and prepare data ---------------------------------------------------
   data <- sf::read_sf("dev/data/tree/toronto_tree_by_da.shp")
   data <- sf::st_drop_geometry(data)
@@ -109,28 +110,34 @@ build_and_append_tree_sqkm <- function(scales_variables_modules, DA_table, crs) 
     add_module(
       id = "tree",
       theme = "Environment",
-      nav_title = "Tree",
-      title_text_title = "Toronto Tree",
+      nav_title = "Tree Coverage",
+      title_text_title = "Toronto Tree Coverage",
       title_text_main = paste0(
-        "<p>Research has shown that city's tree canopy contributes to economic, en",
-        "vironmental and health benefits. This module provides an estimation of",
+        "<p><a href='https://www.greenbelt.ca/cooling_corridors'>Research</a> ",
+        "has shown that city's tree canopy contributes to",
+        " environmental benefits as well as to our physical and emotional well-being.",
+        " However, it is also recognized that trees are <a href='https://tellingstorieswithdata.com/inputs/pdfs/paper_one-2022-ethan_sansom.pdf'>",
+        "unevenly distributed</a> relative to social",
+        " and economic factors.",
+        " This module provides an estimation of",
         " tree counts, density and distribution in Toronto."
       ),
       title_text_extra = paste0(
-        "<p>Data was obtained through Toronto Open Data Portal (https://open.toron",
-        "to.ca/dataset/topographic-mapping-physical-location-of-trees/). Data c",
-        "omes in as a point layer representing the physical location of trees d",
-        "erived from high resolution aerial photography last refreshed in Oct 2",
+        "<p>Data was obtained through <a href='https://open.toron",
+        "to.ca/dataset/topographic-mapping-physical-location-of-trees/'>Toronto</a>",
+        " Open Data Porta. Data comes in as a point layer",
+        " representing the physical location of trees derived",
+        " from high resolution aerial photography last refreshed in Oct 2",
         "019. These point data were then aggregated by census geographic bounda",
         "ries of dissemination areas in Toronto in order to calculate total cou",
-        "nts and density."
+        "nts and density by area and population."
       ),
       regions = unique(data_interpolated$regions),
       metadata = TRUE,
       dataset_info = paste0(""), 
       var_left = c("tree_count", "tree_per1k", "tree_sqkm", "tree_ppo"), 
       dates = "2019", 
-      main_dropdown_title = "Data grouping", 
+      main_dropdown_title = "Tree coverage indicator", 
       var_right = variables$var_code[variables$source == "Canadian census" &
                                        !is.na(variables$parent_vec)]
     )

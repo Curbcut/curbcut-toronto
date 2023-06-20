@@ -185,18 +185,17 @@ scales_variables_modules <-
 
 save.image("dev/data/built/scales_variables_modules.RData")
 load("dev/data/built/scales_variables_modules.RData")
-
+invisible(lapply(list.files("dev/data_import", full.names = TRUE), source))
 
 # Toronto-specific pages
+scales_variables_modules <- 
+  build_and_append_tree_sqkm(scales_variables_modules = scales_variables_modules,
+                             DA_table = census_scales$DA,
+                             crs = crs)
 scales_variables_modules <- 
   build_and_append_tree_count(scales_variables_modules = scales_variables_modules,
                               DA_table = census_scales$DA,
                               crs = crs)
-scales_variables_modules <- 
-  build_and_append_tree_sqkm(scales_variables_modules = scales_variables_modules,
-                              DA_table = census_scales$DA,
-                              crs = crs)
-
 
 scales_variables_modules <- 
   build_and_append_green_space_pct(scales_variables_modules = scales_variables_modules,
@@ -268,14 +267,14 @@ scales_variables_modules$scales <-
 
 # Write stories -----------------------------------------------------------
 
-# stories <- build_stories()
-# stories_mapping <- stories$stories_mapping
-# stories <- stories$stories
-# qs::qsavem(stories, stories_mapping, file = "data/stories.qsm")
-# stories_create_tileset(stories = stories,
-#                        prefix = "mtl",
-#                        username = "sus-mcgill",
-#                        access_token = .cc_mb_token)
+stories <- build_stories()
+stories_mapping <- stories$stories_mapping
+stories <- stories$stories
+qs::qsavem(stories, stories_mapping, file = "data/stories.qsm")
+stories_create_tileset(stories = stories,
+                       prefix = "mtl",
+                       username = "sus-mcgill",
+                       access_token = .cc_mb_token)
 
 scales_variables_modules$modules <-
   scales_variables_modules$modules |>
