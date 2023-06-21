@@ -11,14 +11,16 @@ build_stories <- function() {
   stories <- 
     stories |> 
     stories_add_story(
-      name_id = "TKTK",
-      title = paste0("TKTK"),
-      short_title = "TKTK",
-      preview = paste0("TKTK"),
-      themes = c("Environmental racism", "Green gentrification", 
-                 "Community activism", "Urban renewal", "Neighbourhood history"),
-      lon = -73.574962, 
-      lat = 45.479311)
+      name_id = "highpark",
+      title = paste0("Community Activism for a Car-Free High Park"),
+      short_title = "Car Free High Park",
+      preview = paste0("High Park is a paradise for residents in Toronto to enjoy ",
+                        "outdoor activities, but at the same time, it is ",
+                       "also a battleground that carries conflict between cars, ",
+                       "cyclists and pedestrians on who gets access to the park."),
+      themes = c("Community activism", "Transporation"),
+      lon = -79.463064, 
+      lat = 43.646756)
   
   
   # Create images and mapping -----------------------------------------------

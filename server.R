@@ -28,7 +28,7 @@ shinyServer(function(input, output, session) {
   
   ## If on mobile, warning! ----------------------------------------------------
   
-  curbcut::mobile_warning(r = r)
+  #curbcut::mobile_warning(r = r)
   
   
   ## Home page -----------------------------------------------------------------

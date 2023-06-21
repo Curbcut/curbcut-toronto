@@ -185,21 +185,22 @@ scales_variables_modules <-
 
 save.image("dev/data/built/scales_variables_modules.RData")
 load("dev/data/built/scales_variables_modules.RData")
-
+invisible(lapply(list.files("dev/data_import", full.names = TRUE), source))
 
 # Toronto-specific pages
-
-
-
+scales_variables_modules <- 
+  build_and_append_tree_sqkm(scales_variables_modules = scales_variables_modules,
+                             DA_table = census_scales$DA,
+                             crs = crs)
 scales_variables_modules <- 
   build_and_append_tree_count(scales_variables_modules = scales_variables_modules,
                               DA_table = census_scales$DA,
                               crs = crs)
-scales_variables_modules <- 
-  build_and_append_tree_sqkm(scales_variables_modules = scales_variables_modules,
-                              DA_table = census_scales$DA,
-                              crs = crs)
 
+scales_variables_modules <- 
+  build_and_append_green_space_pct(scales_variables_modules = scales_variables_modules,
+                             DA_table = census_scales$DA,
+                             crs = crs)
 
 
 # Post process
@@ -215,9 +216,9 @@ scales_variables_modules$scales <-
 
 # Map zoom levels ---------------------------------------------------------
 
-map_zoom_levels <- map_zoom_levels_create_all(all_tables = all_tables)
+#map_zoom_levels <- map_zoom_levels_create_all(all_tables = all_tables)
 
-map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
+#map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
 
 
 # Tilesets ----------------------------------------------------------------
@@ -260,9 +261,9 @@ map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
 
 # Produce colours ---------------------------------------------------------
 
-colours_dfs <- cc.buildr::build_colours()
+#colours_dfs <- cc.buildr::build_colours()
 
-qs::qsave(colours_dfs, "data/colours_dfs.qs")
+#qs::qsave(colours_dfs, "data/colours_dfs.qs")
 
 
 # Write stories -----------------------------------------------------------
@@ -377,7 +378,7 @@ placeex_main_card_rmd(scales_variables_modules = scales_variables_modules,
                       regions_dictionary = regions_dictionary,
                       scales_dictionary = scales_dictionary,
                       lang = "en",
-                      tileset_prefix = "mtl",
+                      tileset_prefix = "to",
                       mapbox_username = "sus-mcgill",
                       rev_geocode_from_localhost = TRUE,
                       overwrite = FALSE)
