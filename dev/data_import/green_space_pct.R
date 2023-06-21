@@ -9,6 +9,7 @@ build_and_append_green_space_pct <- function(scales_variables_modules, DA_table,
   data <- sf::st_drop_geometry(data) #should not drop geometry
   data <- data[, c("DAUID", "GreenDn")]
   names(data) <- c("ID", "green_space_pct")
+  data$green_space_pct <- data$green_space_pct*100
   
   data <- merge(data, DA_table[c("ID")])
   names(data)[1] <- "DA_ID"

@@ -188,9 +188,6 @@ load("dev/data/built/scales_variables_modules.RData")
 invisible(lapply(list.files("dev/data_import", full.names = TRUE), source))
 
 # Toronto-specific pages
-
-
-
 scales_variables_modules <- 
   build_and_append_tree_sqkm(scales_variables_modules = scales_variables_modules,
                              DA_table = census_scales$DA,
