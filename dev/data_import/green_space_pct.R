@@ -16,6 +16,7 @@ build_and_append_green_space_pct <- function(scales_variables_modules, DA_table,
   
   #data <- data[c("DA_ID", "green_space_pct")]
   names(data)[2] <- paste0(names(data)[2], "_2023")
+  data <- sf::st_as_sf(data)
 
 
   # Get list of data variables ----------------------------------------------

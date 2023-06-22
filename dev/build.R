@@ -166,7 +166,7 @@ scales_variables_modules <-
               geo_uid = cancensus_cma_code,
               approximate_name_match = FALSE)
 scales_variables_modules <-
-  ru_canale(scales_variables_modules = scales_variables_modules,
+  ru_alp(scales_variables_modules = scales_variables_modules,
             crs = crs,
             region_DA_IDs = census_scales$DA$ID)
 

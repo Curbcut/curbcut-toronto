@@ -6,7 +6,7 @@ stories_UI <- function(id) {
   themes <- unique(unlist(stories$themes))
   themes <- list(Themes = setNames(themes, themes))
   shiny::tagList(
-
+    
     # Sidebar
     curbcut::sidebar_UI(
       id = NS(id, id),
@@ -25,7 +25,7 @@ stories_UI <- function(id) {
     
     # Map
     curbcut::map_UI(id = shiny::NS(id, id)),
-
+    
     # Main panel
     shiny::htmlOutput(shiny::NS(id, "stories"))
   )
@@ -37,9 +37,14 @@ stories_UI <- function(id) {
 stories_server <- function(id, r) {
   moduleServer(id, function(input, output, session) {
     id_map <- paste0(id, "-map")
-    themes <- unique(unlist(stories$themes))
-    themes <- list(Themes = setNames(themes, themes))
-
+    themes_raw <- unique(unlist(stories$themes))
+    themes_raw <- list(Themes = setNames(themes_raw, themes_raw))
+    themes <- shiny::reactive({
+      v <- cc_t(themes_raw, lang = r$lang())
+      names(v[[1]]) <- sapply(names(v[[1]]), cc_t, lang = r$lang())
+      v
+    })
+    
     # Sidebar
     curbcut::sidebar_server(id = id, r = r)
     
@@ -51,7 +56,7 @@ stories_server <- function(id, r) {
         rdeck::add_mvt_layer(
           id = "stories",
           data = rdeck::tile_json(paste0(mapbox_username, ".", tileset_prefix, "_", 
-                                "stories")),
+                                         "stories")),
           point_type = "icon",
           get_icon = name,
           icon_atlas = "stories/image_atlas.png",
@@ -61,10 +66,10 @@ stories_server <- function(id, r) {
           auto_highlight = TRUE,
           highlight_color = "#FFFFFF50")
     })
-
+    
     # Click reactive
     curbcut::update_select_id(id = id, r = r)
-
+    
     # Render the story in question, now only in english (_en)
     output$stories <- renderUI({
       
@@ -85,60 +90,64 @@ stories_server <- function(id, r) {
         )
       }
     })
-
+    
     # Add stories on the left-hand panel and react on a click
     themes_c <- curbcut::picker_server(id = id,
                                        picker_id = "var",
                                        r = r,
-                                       var_list = shiny::reactive(themes),
-                                       selected = unlist(themes))
+                                       var_list = themes,
+                                       selected = unlist(themes()))
     
     shiny::observeEvent(themes_c(), {
       in_theme <-
         stories$ID[which(
           sapply(sapply(stories$themes, `%in%`, themes_c()), sum) > 0)]
       
+      show_short <- stories$short_title[stories$ID %in% in_theme]
+      show_short <- sapply(show_short, cc_t, lang = r$lang())
+      show_short <- show_short[order(show_short)]
+      
       shiny::removeUI(selector = "#bullet_points")
       shiny::insertUI(paste0("#stories-hr"),
-               where = "afterEnd",
-               shiny::tags$ul(
-                 id = "bullet_points",
-                 lapply(stories$short_title[stories$ID %in% in_theme], \(x) {
-                   shiny::tags$li(
-                     curbcut::cc_t(lang = r$lang(), x),
-                     style = "cursor: pointer; text-decoration: none;",
-                     title = curbcut::cc_t(lang = r$lang(),
-                                           stories$preview[stories$short_title == x]),
-                     onclick = paste0("Shiny.setInputValue(`",
-                                      NS(id, "clicked_linked"),
-                                      "`, '",
-                                      curbcut::cc_t(lang = r$lang(),
-                                                    stories$ID[stories$short_title == x]),
-                                      "');"),
-                     onmouseover = "$(this).css('text-decoration', 'underline');",
-                     onmouseout = "$(this).css('text-decoration', 'none');"
-                   )
-                 })
-               )
+                      where = "afterEnd",
+                      shiny::tags$ul(
+                        id = "bullet_points",
+                        lapply(show_short, \(x) {
+                          shiny::tags$li(
+                            x,
+                            style = "cursor: pointer; text-decoration: none;",
+                            title = curbcut::cc_t(lang = r$lang(),
+                                                  stories$preview[stories$short_title == x]),
+                            onclick = paste0("Shiny.setInputValue(`",
+                                             NS(id, "clicked_linked"),
+                                             "`, '",
+                                             curbcut::cc_t(lang = r$lang(),
+                                                           stories$ID[stories$short_title == x]),
+                                             "');"),
+                            onmouseover = "$(this).css('text-decoration', 'underline');",
+                            onmouseout = "$(this).css('text-decoration', 'none');"
+                          )
+                        })
+                      )
       )
-
+      
     })
     shiny::observeEvent(input$clicked_linked, {
       r[[id]]$select_id(input$clicked_linked)
     })
-
+    
     # Update the select_id if clicked on a story title in the top navigation panel
     shiny::observeEvent(input$select_nav, {
       r[[id]]$select_id(input$select_nav)
     })
-
+    
     # Hide main panel when "Go back to map" button is clicked
     shiny::observeEvent(input$back, r[[id]]$select_id(NA))
     shiny::observeEvent(r[[id]]$select_id(), {
       shinyjs::toggle("back", condition = !is.na(r[[id]]$select_id()))
       shinyjs::toggle("stories", condition = !is.na(r[[id]]$select_id()))
     })
-
+    
     # Bookmarking
     curbcut::bookmark_server(
       id = id,
@@ -146,6 +155,6 @@ stories_server <- function(id, r) {
       select_id = r[[id]]$select_id,
       exclude_input = "ccpicker_var"
     )
-
+    
   })
 }
