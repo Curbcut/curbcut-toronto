@@ -305,7 +305,7 @@ scales_variables_modules$modules <-
 # Add the place explorer in the modules dataframe
 scales_variables_modules$modules <-
   add_module(modules = scales_variables_modules$modules,
-             id = "place_exp",
+             id = "place_explorer",
              theme = NA,
              nav_title = "Place explorer",
              title_text_title = "Place explorer",
