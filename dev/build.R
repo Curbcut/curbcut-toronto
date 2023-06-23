@@ -166,7 +166,7 @@ scales_variables_modules <-
               geo_uid = cancensus_cma_code,
               approximate_name_match = FALSE)
 scales_variables_modules <-
-  ru_canale(scales_variables_modules = scales_variables_modules,
+  ru_alp(scales_variables_modules = scales_variables_modules,
             crs = crs,
             region_DA_IDs = census_scales$DA$ID)
 
@@ -273,7 +273,7 @@ stories_mapping <- stories$stories_mapping
 stories <- stories$stories
 qs::qsavem(stories, stories_mapping, file = "data/stories.qsm")
 stories_create_tileset(stories = stories,
-                       prefix = "mtl",
+                       prefix = "to",
                        username = "sus-mcgill",
                        access_token = .cc_mb_token)
 
@@ -370,15 +370,22 @@ pe_main_card_data <- placeex_main_card_data(scales = scales_variables_modules$sc
                                             crs = crs,
                                             regions_dictionary = regions_dictionary)
 
+# qs::qsave(pe_main_card_data, file = "data/pe_main_card_data.qs")
+pe_main_card_data <- qs::qread("data/pe_main_card_data.qs")
+
 placeex_main_card_rmd(scales_variables_modules = scales_variables_modules,
                       pe_main_card_data = pe_main_card_data,
                       regions_dictionary = regions_dictionary,
                       scales_dictionary = scales_dictionary,
                       lang = "en",
-                      tileset_prefix = "mtl",
+                      tileset_prefix = "to",
                       mapbox_username = "sus-mcgill",
                       rev_geocode_from_localhost = TRUE,
                       overwrite = FALSE)
+
+# Save the place explorer files, which serves as a 'does it exist' for `curbcut`
+pe_docs <- list.files("www/place_explorer/", full.names = TRUE)
+qs::qsave(pe_docs, "data/pe_docs.qs")
 
 # Deploy app --------------------------------------------------------------
 

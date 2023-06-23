@@ -16,6 +16,7 @@ build_and_append_green_space_pct <- function(scales_variables_modules, DA_table,
   
   #data <- data[c("DA_ID", "green_space_pct")]
   names(data)[2] <- paste0(names(data)[2], "_2023")
+  data <- sf::st_as_sf(data)
 
 
   # Get list of data variables ----------------------------------------------
@@ -94,10 +95,10 @@ build_and_append_green_space_pct <- function(scales_variables_modules, DA_table,
       variables = scales_variables_modules$variables,
       var_code = "green_space_pct",
       type = "sqkm",
-      var_title = "green space per 1 square kilometre",
-      var_short = "green space %",
-      explanation = "the percentage of green space or the area of green space in one square kilometre",
-      exp_q5 = "the percentage of green space is _X_",
+      var_title = "Green space (%)",
+      var_short = "Green space (%)",
+      explanation = "the percentage of green space",
+      exp_q5 = "_X_% of the area is covered by green space",
       theme = "Environment",
       private = FALSE,
       pe_include = TRUE,
