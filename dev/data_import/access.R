@@ -1,6 +1,6 @@
 ## BUILD AND APPEND ACCESS DATA ################################################
 
-build_and_append_access <- function(scales_variables_modules, DA_table, crs) {
+build_and_append_access <- function(scales_variables_modules, traveltimes, DA_table, crs) {
 
   # Read and prepare data ---------------------------------------------------
   
@@ -17,21 +17,24 @@ build_and_append_access <- function(scales_variables_modules, DA_table, crs) {
   #          sf::st_is(data[x,], "MULTIPOLYGON"))
   # data <- data[keep_index, ]
   # data <- sf::st_cast(data, "MULTIPOLYGON")
-  
-  data <- sf::st_read("dev/data/green_space/green_space_GTA_da.shp")
-  data <- data[c("DAUID", "GREENAR")]
-  data <- sf::st_drop_geometry(data)
-  names(data) <- c("DA_ID", "green_space_sqkm_2023")
-  data <- tibble::as_tibble(data)
-  
-  # # Add point data to the access module. First step using a point data df
-  # point_DA <- accessibility_point_per_DA(point_data = list(daycarespots_2023 = daycares),
-  #                                        DA_table = census_scales$DA,
-  #                                        crs = crs)
-  
-  access_time <- accessibility_add_intervals(point_per_DA = data,
-                                             traveltimes = traveltimes,
-                                             region_DA_IDs = data$DA_ID)
+  # 
+  # data <- sf::st_read("dev/data/green_space/green_space_GTA_da.shp")
+  # data <- data[c("DAUID", "GREENAR")]
+  # data <- sf::st_drop_geometry(data)
+  # names(data) <- c("DA_ID", "green_space_sqkm_2023")
+  # data <- tibble::as_tibble(data)
+  # 
+  # # # Add point data to the access module. First step using a point data df
+  # # point_DA <- accessibility_point_per_DA(point_data = list(daycarespots_2023 = daycares),
+  # #                                        DA_table = census_scales$DA,
+  # #                                        crs = crs)
+  # 
+  # access_time <- accessibility_add_intervals(point_per_DA = data,
+  #                                            traveltimes = traveltimes,
+  #                                            region_DA_IDs = data$DA_ID)
+  # 
+  # qs::qsave(access_time, "dev/data/built/access_time.qs")
+  access_time <- qs::qread("dev/data/built/access_time.qs")
   
 
   # Get list of data variables ----------------------------------------------
@@ -62,22 +65,22 @@ build_and_append_access <- function(scales_variables_modules, DA_table, crs) {
 
   # Make a types named list -------------------------------------------------
 
-  # This will be used to inform which methods to use to calculate breaks and
-  # the region values. Percentages, dollars, index, ... get treated differently.
-  # See the `add_variable`'s documentation to see possible types.
-  types <- list(access_green_space_sqkm = "avg")
-
-
-  # Calculate breaks --------------------------------------------------------
-
-  # Calculate breaks using the `calculate_breaks` function.
+  unique_vars <- gsub("_\\d{4}$", "", vars)
+  
+  # Calculate breaks ONCE for 30 minutes. Use those breaks on all variables
+  breaks_base <- sapply(unique_vars, paste, simplify = FALSE, USE.NAMES = TRUE)
+  breaks_base <- lapply(breaks_base, \(x) gsub("_\\d{2}_", "_30_", x))
+  
+  types <- rep(list("avg"), length(unique_vars))
+  names(types) <- unique_vars
+  
   with_breaks <-
     calculate_breaks(
       all_scales = data_interpolated$scales,
-      vars = vars,
-      types = types
+      vars = average_vars,
+      types = types, 
+      use_quintiles = TRUE
     )
-
 
   # Get the variables values per regions ------------------------------------
 
@@ -94,7 +97,18 @@ build_and_append_access <- function(scales_variables_modules, DA_table, crs) {
     vars = vars,
     types = types,
     parent_strings = parent_strings,
-    breaks = with_breaks$q5_breaks_table)
+    breaks = with_breaks$q5_breaks_table,
+    round_closest_5 = FALSE)
+  
+  
+  # Variable measurements ----------------------------------------------------
+  
+  var_measurement <- data.frame(
+    df = data_interpolated$avail_df,
+    measurement = rep("scalar", length(data_interpolated$avail_df)))
+  
+  var_measurement$measurement[grepl("_DA$", var_measurement$df)] <-
+    rep("ordinal", length(var_measurement$measurement[grepl("_DA$", var_measurement$df)]))
 
 
   # Variables table ---------------------------------------------------------
@@ -173,7 +187,8 @@ build_and_append_access <- function(scales_variables_modules, DA_table, crs) {
       interpolated = data_interpolated$interpolated_ref,
       rankings_chr = c("exceptionally sparse", "unusually sparse",
                        "just about average", "unusually dense",
-                       "exceptionally dense")
+                       "exceptionally dense"),
+      var_measurement = var_measurement
     ) |>
       (\(x) x[nrow(x), ])()
   })
@@ -200,3 +215,4 @@ build_and_append_access <- function(scales_variables_modules, DA_table, crs) {
   ))
 
 }
+

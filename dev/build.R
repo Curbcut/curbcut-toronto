@@ -176,11 +176,17 @@ scales_variables_modules <-
 # qs::qsave(traveltimes, "dev/data/built/traveltimes.qs")
 traveltimes <- qs::qread("dev/data/built/traveltimes.qs")
 
-future::plan(future::multisession(), workers = 4)
+future::plan(future::multisession(), workers = 3)
 scales_variables_modules <-
   ba_accessibility_points(scales_variables_modules = scales_variables_modules,
                           region_DA_IDs = census_scales$DA$ID,
                           traveltimes = traveltimes, 
+                          crs = crs)
+
+scales_variables_modules <-
+  build_and_append_access(scales_variables_modules = scales_variables_modules,
+                          DA_table = census_scales$DA,
+                          traveltimes = traveltimes,
                           crs = crs)
 
 save.image("dev/data/built/scales_variables_modules.RData")
@@ -268,14 +274,14 @@ scales_variables_modules$scales <-
 
 # Write stories -----------------------------------------------------------
 
-stories <- build_stories()
-stories_mapping <- stories$stories_mapping
-stories <- stories$stories
-qs::qsavem(stories, stories_mapping, file = "data/stories.qsm")
-stories_create_tileset(stories = stories,
-                       prefix = "to",
-                       username = "sus-mcgill",
-                       access_token = .cc_mb_token)
+# stories <- build_stories()
+# stories_mapping <- stories$stories_mapping
+# stories <- stories$stories
+# qs::qsavem(stories, stories_mapping, file = "data/stories.qsm")
+# stories_create_tileset(stories = stories,
+#                        prefix = "to",
+#                        username = "sus-mcgill",
+#                        access_token = .cc_mb_token)
 
 scales_variables_modules$modules <-
   scales_variables_modules$modules |>
@@ -299,7 +305,7 @@ scales_variables_modules$modules <-
 # Add the place explorer in the modules dataframe
 scales_variables_modules$modules <-
   add_module(modules = scales_variables_modules$modules,
-             id = "place_explorer",
+             id = "place_exp",
              theme = NA,
              nav_title = "Place explorer",
              title_text_title = "Place explorer",
@@ -354,38 +360,30 @@ qs::qsave(scales_dictionary, file = "data/scales_dictionary.qs")
 qs::qsave(regions_dictionary, file = "data/regions_dictionary.qs")
 tictoc::toc()
 
-# Write data to AWS bucket
-cc.data::bucket_write_folder(folder = "data", bucket = "curbcut.toronto.data")
-
-
 # Place explorer content creation -----------------------------------------
 
 # Should be done once the data is saved
 
 future::plan(future::multisession(), workers = 4)
 
-pe_main_card_data <- placeex_main_card_data(scales = scales_variables_modules$scales,
-                                            DA_table = census_scales$DA,
-                                            region_DA_IDs = census_scales$DA$ID,
-                                            crs = crs,
-                                            regions_dictionary = regions_dictionary)
-
+# pe_main_card_data <- placeex_main_card_data(scales = scales_variables_modules$scales,
+#                                             DA_table = census_scales$DA,
+#                                             region_DA_IDs = census_scales$DA$ID,
+#                                             crs = crs,
+#                                             regions_dictionary = regions_dictionary)
+# 
 # qs::qsave(pe_main_card_data, file = "data/pe_main_card_data.qs")
 pe_main_card_data <- qs::qread("data/pe_main_card_data.qs")
-
-placeex_main_card_rmd(scales_variables_modules = scales_variables_modules,
-                      pe_main_card_data = pe_main_card_data,
-                      regions_dictionary = regions_dictionary,
-                      scales_dictionary = scales_dictionary,
-                      lang = "en",
-                      tileset_prefix = "to",
-                      mapbox_username = "sus-mcgill",
-                      rev_geocode_from_localhost = TRUE,
-                      overwrite = FALSE)
 
 # Save the place explorer files, which serves as a 'does it exist' for `curbcut`
 pe_docs <- list.files("www/place_explorer/", full.names = TRUE)
 qs::qsave(pe_docs, "data/pe_docs.qs")
+
+
+# Write data to bucket ----------------------------------------------------
+
+cc.data::bucket_write_folder(folder = "data", bucket = "curbcut.toronto.data")
+
 
 # Deploy app --------------------------------------------------------------
 
