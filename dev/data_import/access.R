@@ -79,7 +79,8 @@ build_and_append_access <- function(scales_variables_modules, traveltimes, DA_ta
       all_scales = data_interpolated$scales,
       vars = average_vars,
       types = types, 
-      use_quintiles = TRUE
+      use_quintiles = TRUE, 
+      breaks_base = breaks_base
     )
 
   # Get the variables values per regions ------------------------------------
