@@ -312,8 +312,8 @@ scales_variables_modules$modules <-
              title_text_title = "Place explorer",
              title_text_main = paste0(
                "<p>Select a location by entering a postal code or clicking on the ",
-               "map and see how it compares to the rest of the Montreal region ",
-               "or island across a variety of sustainability indicators."
+               "map and see how it compares to the rest of the Greater Toronto Area ",
+               "across a variety of sustainability indicators."
              ),
              title_text_extra = paste0(
                "<p>The data in the Place Explorer is taken from other Curbcut pages with ",
