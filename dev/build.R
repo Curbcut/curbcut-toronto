@@ -183,15 +183,16 @@ scales_variables_modules <-
                           traveltimes = traveltimes, 
                           crs = crs)
 
+save.image("dev/data/built/scales_variables_modules.RData")
+load("dev/data/built/scales_variables_modules.RData")
+invisible(lapply(list.files("dev/data_import", full.names = TRUE), source))
+
+
 scales_variables_modules <-
   build_and_append_access(scales_variables_modules = scales_variables_modules,
                           DA_table = census_scales$DA,
                           traveltimes = traveltimes,
                           crs = crs)
-
-save.image("dev/data/built/scales_variables_modules.RData")
-load("dev/data/built/scales_variables_modules.RData")
-invisible(lapply(list.files("dev/data_import", full.names = TRUE), source))
 
 # Toronto-specific pages
 scales_variables_modules <- 
