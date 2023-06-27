@@ -37,7 +37,7 @@ authors_UI <- function(id) {
                 )),
       susAuthor("Han Qiao", 
                 curbcut::cc_t("Designer"), 
-                "team/photos/han_qiao.jpg",
+                "team/photos/han_qiao.jpeg",
                 susAuthorBio(
                   curbcut::cc_t("Han Qiao is a PhD student at the Faculty of Inf",
                                 "ormation at the University of Toronto. Her rese",
