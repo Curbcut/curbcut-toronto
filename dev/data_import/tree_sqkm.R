@@ -110,8 +110,8 @@ build_and_append_tree_sqkm <- function(scales_variables_modules, DA_table, crs) 
     add_module(
       id = "tree",
       theme = "Environment",
-      nav_title = "Tree Coverage",
-      title_text_title = "Toronto Tree Coverage",
+      nav_title = "Tree coverage",
+      title_text_title = "Toronto tree coverage",
       title_text_main = paste0(
         "<p><a href='https://www.greenbelt.ca/cooling_corridors'>Research</a> ",
         "has shown that city's tree canopy contributes to",

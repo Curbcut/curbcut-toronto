@@ -167,8 +167,12 @@ scales_variables_modules <-
               approximate_name_match = FALSE)
 scales_variables_modules <-
   ru_alp(scales_variables_modules = scales_variables_modules,
-            crs = crs,
-            region_DA_IDs = census_scales$DA$ID)
+         crs = crs,
+         region_DA_IDs = census_scales$DA$ID)
+scales_variables_modules <-
+  ru_canbics(scales_variables_modules = scales_variables_modules,
+             crs = crs,
+             region_DA_IDs = census_scales$DA$ID)
 
 # # Add access to amenities module
 # traveltimes <-

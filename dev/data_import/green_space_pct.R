@@ -153,8 +153,8 @@ build_and_append_green_space_pct <- function(scales_variables_modules, DA_table,
     add_module(
       id = "greenspace",
       theme = "Environment",
-      nav_title = "Green Space",
-      title_text_title = "Green Space",
+      nav_title = "Green space",
+      title_text_title = "Green space",
       title_text_main = paste0(
         "<p>There are many types of green spaces such as parks, forest, playground, ",
         "and community gardens etc. These different types of green spaces all ",
