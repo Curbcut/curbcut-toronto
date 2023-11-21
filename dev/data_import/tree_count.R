@@ -38,7 +38,6 @@ build_and_append_tree_count <- function(scales_variables_modules, DA_table, crs)
       data = data,
       base_scale = "DA",
       all_scales = scales_variables_modules$scales,
-      only_regions = "city",
       weight_by = "population",
       average_vars = average_vars,
       additive_vars = additive_vars,
@@ -46,41 +45,15 @@ build_and_append_tree_count <- function(scales_variables_modules, DA_table, crs)
     )
 
   data_interpolated$interpolated_ref$interpolated_from[
-    data_interpolated$interpolated_ref$df == "city_DA"
+    data_interpolated$interpolated_ref$scale == "DA"
   ] <- "tree point" 
   
+  # Data tibble -------------------------------------------------------------
   
-  # Make a types named list -------------------------------------------------
-  
-  types <- list(tree_per1k = "per1k",
-                tree_count = "count",
-                tree_ppo = "ppo")
-  
-  
-  # Calculate breaks --------------------------------------------------------
-
-  # Calculate breaks using the `calculate_breaks` function.
-  with_breaks <-
-    calculate_breaks(
-      all_scales = data_interpolated$scales,
-      vars = vars,
-      types = types
-    )
-  
-  
-  # Get the variables values per regions ------------------------------------
-  
-  # Make a parent string the same way as the types
-  parent_strings <- list(tree_per1k = "population",
-                         tree_count = "count",
-                         tree_ppo = "population")
-  
-  region_vals <- variables_get_region_vals(
-    scales = data_interpolated$scales,
-    vars = c("tree_count", "tree_per1k", "tree_ppo"),
-    types = types,
-    parent_strings = parent_strings,
-    breaks = with_breaks$q5_breaks_table)
+  data <- data_construct(svm_data = scales_variables_modules$data,
+                         scales_data = data_interpolated$scales,
+                         unique_var = c("tree_per1k", "tree_ppo", "tree_count"),
+                         time_regex = "_\\d{4}$")
   
 
   # Variables table ---------------------------------------------------------
@@ -98,14 +71,11 @@ build_and_append_tree_count <- function(scales_variables_modules, DA_table, crs)
       explanation = "the count of trees", 
       exp_q5 = "populate the urban landscape", 
       parent_vec = "trees", 
-      theme = "Environment", 
-      avail_df = data_interpolated$avail_df, 
+      theme = "Ecology", 
+      avail_scale = data_interpolated$avail_scale, 
       pe_include = TRUE,
-      region_values = region_vals$tree_count,
       private = FALSE,
-      dates = with_breaks$avail_dates[["tree_count"]], 
-      breaks_q3 = with_breaks$q3_breaks_table[["tree_count"]],
-      breaks_q5 = with_breaks$q5_breaks_table[["tree_count"]],
+      dates = 2019, 
       source = "City of Toronto's open data portal",
       interpolated = data_interpolated$interpolated_ref
     )
@@ -119,15 +89,12 @@ build_and_append_tree_count <- function(scales_variables_modules, DA_table, crs)
       var_short = "Trees 1k",
       explanation = "the density of trees measured by 1000 residents",
       exp_q5 = "the density of trees is _X_ per 1,000 residents",
-      theme = "Environment",
+      theme = "Ecology",
       parent_vec = NA, 
-      avail_df = data_interpolated$avail_df, 
+      avail_scale = data_interpolated$avail_scale, 
       pe_include = TRUE,
-      region_values = region_vals$tree_per1k,
       private = FALSE,
-      dates = with_breaks$avail_dates[["tree_per1k"]],
-      breaks_q3 = with_breaks$q3_breaks_table[["tree_per1k"]],
-      breaks_q5 = with_breaks$q5_breaks_table[["tree_per1k"]],
+      dates = 2019, 
       source = "City of Toronto's open data portal",
       interpolated = data_interpolated$interpolated_ref,
       rankings_chr = c("exceptionally sparse", "unusually sparse",
@@ -144,15 +111,12 @@ build_and_append_tree_count <- function(scales_variables_modules, DA_table, crs)
       var_short = "PPT",
       explanation = "the number of people per tree",
       exp_q5 = "tree",
-      theme = "Environment",
+      theme = "Ecology",
       parent_vec = NA, 
-      avail_df = data_interpolated$avail_df, 
+      avail_scale = data_interpolated$avail_scale, 
       pe_include = TRUE,
-      region_values = region_vals$tree_ppo,
       private = FALSE,
-      dates = with_breaks$avail_dates[["tree_ppo"]],
-      breaks_q3 = with_breaks$q3_breaks_table[["tree_ppo"]],
-      breaks_q5 = with_breaks$q5_breaks_table[["tree_ppo"]],
+      dates = 2019, 
       source = "City of Toronto's open data portal",
       interpolated = data_interpolated$interpolated_ref,
       rankings_chr = c("exceptionally sparse", "unusually sparse",
@@ -164,9 +128,10 @@ build_and_append_tree_count <- function(scales_variables_modules, DA_table, crs)
   # Return ------------------------------------------------------------------
 
   return(list(
-    scales = with_breaks$scales,
+    scales = data_interpolated$scales,
     variables = variables,
-    modules = scales_variables_modules$modules
+    modules = scales_variables_modules$modules,
+    data = data
   ))
 
 }

@@ -2,7 +2,6 @@
 
 build_and_append_tree_sqkm <- function(scales_variables_modules, DA_table, crs) {
   
-  DA_table = census_scales$DA
   # Read and prepare data ---------------------------------------------------
   data <- sf::read_sf("dev/data/tree/toronto_tree_by_da.shp")
   data <- sf::st_drop_geometry(data)
@@ -33,14 +32,13 @@ build_and_append_tree_sqkm <- function(scales_variables_modules, DA_table, crs) 
     data = data,
     all_scales = scales_variables_modules$scales,
     crs = crs,
-    only_regions = "city",
     average_vars = average_vars,
     additive_vars = c(),
     name_interpolate_from = "DA"
     )
   
   data_interpolated$interpolated_ref$interpolated_from[
-    data_interpolated$interpolated_ref$df == "city_DA"
+    data_interpolated$interpolated_ref$scale == "DA"
   ] <- "tree point" 
   
   
@@ -49,28 +47,18 @@ build_and_append_tree_sqkm <- function(scales_variables_modules, DA_table, crs) 
   types <- list(tree_sqkm = "sqkm")
   
   
-  # Calculate breaks --------------------------------------------------------
-  
-  # Calculate breaks using the `calculate_breaks` function.
-  with_breaks <-
-    calculate_breaks(
-      all_scales = data_interpolated$scales,
-      vars = vars,
-      types = types
-    )
-  
-  
   # Get the variables values per regions ------------------------------------
   
   # Make a parent string the same way as the types
   parent_strings <- list(tree_sqkm = NA)
   
-  region_vals <- variables_get_region_vals(
-    scales = data_interpolated$scales,
-    vars = c("tree_sqkm"),
-    types = types,
-    parent_strings = parent_strings,
-    breaks = with_breaks$q5_breaks_table)
+  # Data tibble -------------------------------------------------------------
+  
+  data <- data_construct(svm_data = scales_variables_modules$data,
+                         scales_data = data_interpolated$scales,
+                         unique_var = "tree_sqkm",
+                         time_regex = "_\\d{4}$")
+
   
   # Variables table ---------------------------------------------------------
 
@@ -86,21 +74,24 @@ build_and_append_tree_sqkm <- function(scales_variables_modules, DA_table, crs) 
       var_short = "Trees km2",
       explanation = "the density of trees measured by square kilometres",
       exp_q5 = "the density of trees is _X_ per square kilometres",
-      theme = "Environment",
+      theme = "Ecology",
       private = FALSE,
       pe_include = TRUE,
       parent_vec = NA,
-      region_values = region_vals$tree_sqkm,
-      dates = with_breaks$avail_dates[["tree_sqkm"]],
-      avail_df = data_interpolated$avail_df, 
-      breaks_q3 = with_breaks$q3_breaks_table[["tree_sqkm"]],
-      breaks_q5 = with_breaks$q5_breaks_table[["tree_sqkm"]],
+      dates = 2019,
+      avail_scale = data_interpolated$avail_scale, 
       source = "City of Toronto's open data portal",
       interpolated = data_interpolated$interpolated_ref,
       rankings_chr = c("exceptionally sparse", "unusually sparse",
                        "just about average", "unusually dense",
                        "exceptionally dense")
     )
+  
+  # Possible sequences ------------------------------------------------------
+  
+  avail_scale_combinations <-
+    get_avail_scale_combinations(scales_sequences = scales_sequences,
+                                 avail_scales = data_interpolated$avail_scale)
 
 
   # Modules table -----------------------------------------------------------
@@ -109,7 +100,7 @@ build_and_append_tree_sqkm <- function(scales_variables_modules, DA_table, crs) 
     scales_variables_modules$modules |>
     add_module(
       id = "tree",
-      theme = "Environment",
+      theme = "Ecology",
       nav_title = "Tree coverage",
       title_text_title = "Toronto tree coverage",
       title_text_main = paste0(
@@ -132,14 +123,15 @@ build_and_append_tree_sqkm <- function(scales_variables_modules, DA_table, crs) 
         "ries of dissemination areas in Toronto in order to calculate total cou",
         "nts and density by area and population."
       ),
-      regions = unique(data_interpolated$regions),
       metadata = TRUE,
       dataset_info = paste0(""), 
       var_left = c("tree_count", "tree_per1k", "tree_sqkm", "tree_ppo"), 
       dates = "2019", 
       main_dropdown_title = "Tree coverage indicator", 
       var_right = variables$var_code[variables$source == "Canadian census" &
-                                       !is.na(variables$parent_vec)]
+                                       !is.na(variables$parent_vec)],
+      default_var = "tree_count",
+      avail_scale_combinations = avail_scale_combinations
     )
   
 
@@ -147,9 +139,10 @@ build_and_append_tree_sqkm <- function(scales_variables_modules, DA_table, crs) 
   # Return ------------------------------------------------------------------
 
   return(list(
-    scales = with_breaks$scales,
+    scales = data_interpolated$scales,
     variables = variables,
-    modules = modules
+    modules = if (exists("modules")) modules else scales_variables_modules$modules,
+    data = data
   ))
 
 }

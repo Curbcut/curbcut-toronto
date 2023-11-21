@@ -30,9 +30,15 @@ vignettes/*.pdf
 /dev/data/*
 # Main data
 data/*
+# Temp main data
+/data_temp*
 # Other
 *DS_Store
 *.Rproj
 rsconnect/*
 desktop.ini
 .Rprofile
+/renv*
+renv.lock
+# PowerShell script in root directory
+/*.ps1

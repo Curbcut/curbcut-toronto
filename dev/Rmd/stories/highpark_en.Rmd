@@ -32,7 +32,7 @@ knitr::include_graphics(here("dev/data/stories/raw_images/highpark/figure0.jpeg"
 
 ```{r, echo=FALSE, fig.align = 'center', fig.cap="Car Free High Park coalition logo.", warning=FALSE}
 
-knitr::include_graphics(here("dev/data/stories/raw_images/highpark/figure1.jpeg"))
+knitr::include_graphics(here("dev/data/stories/raw_images/highpark/figure1.png"))
 ```
 
 <p>To push forward the campaign, the Car Free High Park coalition drafted a letter to the city and launched an email and social media initiative. They utilized the <a href="https://www.toronto.ca/wp-content/uploads/2023/01/93b9-high-park-movement-strategy-engagement-summary-summer-2022.pdf">survey results</a> from the City to demonstrate that majority of park visitors agree that a car-free High Park will 1) make the park safer, 2) make the park more accessible and 3) improve the park’s natural environment. Beyond survey statistics, another important aspect of their advocacy efforts was collecting and referencing examples of car-free parks, especially those in neighbouring cities such as New York City and Montreal. These parks served as evidence that a car-free future is feasible. The advocates envisioned that High Park could soon become an exemplary model for future advocates of a car-free park. To amplify their message, the team continuously talked to the press and ultimately, their efforts led to more than 2,300 signatures for their <a href="https://actionnetwork.org/petitions/sign-the-petition-to-make-high-park-car-free?source=direct_link">petition</a>. </p>

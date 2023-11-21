@@ -14,10 +14,11 @@ build_stories <- function() {
       name_id = "highpark",
       title = paste0("Community Activism for a Car-Free High Park"),
       short_title = "Car Free High Park",
-      preview = paste0("High Park is a paradise for residents in Toronto to enjoy ",
+      preview_en = paste0("High Park is a paradise for residents in Toronto to enjoy ",
                         "outdoor activities, but at the same time, it is ",
                        "also a battleground that carries conflict between cars, ",
                        "cyclists and pedestrians on who gets access to the park."),
+      preview_fr = "",
       themes = c("Community activism", "Transporation"),
       lon = -79.463064, 
       lat = 43.646756)
@@ -25,7 +26,7 @@ build_stories <- function() {
   
   # Create images and mapping -----------------------------------------------
   
-  stories_mapping <- stories_atlas_mapping(stories = stories)
+  stories <- stories_map_images(stories = stories)
   
   
   # Knit all stories Rmds ---------------------------------------------------
@@ -36,7 +37,6 @@ build_stories <- function() {
   
   # Return ------------------------------------------------------------------
   
-  return(list(stories = stories,
-              stories_mapping = stories_mapping))
+  return(stories)
   
 }

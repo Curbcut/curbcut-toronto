@@ -46,44 +46,19 @@ build_and_append_green_space_pct <- function(scales_variables_modules, DA_table,
     )
 
   data_interpolated$interpolated_ref$interpolated_from[
-    data_interpolated$interpolated_ref$df == "CMA_DA"
+    data_interpolated$interpolated_ref$scale == "DA"
   ] <- "green space polygons" #check text: telling user how data is interpolated
   
   data_interpolated$interpolated_ref$interpolated_from[
-    data_interpolated$interpolated_ref$df == "city_DA"
+    data_interpolated$interpolated_ref$scale == "DA"
   ] <- "green space polygons"
   
-  # Make a types named list -------------------------------------------------
-
-  # This will be used to inform which methods to use to calculate breaks and
-  # the region values. Percentages, dollars, index, ... get treated differently.
-  # See the `add_variable`'s documentation to see possible types.
-  types <- list(green_space_pct = "sqkm")
-
-
-  # Calculate breaks --------------------------------------------------------
-
-  # Calculate breaks using the `calculate_breaks` function.
-  with_breaks <-
-    calculate_breaks(
-      all_scales = data_interpolated$scales,
-      vars = vars,
-      types = types
-    )
-
-
-  # Get the variables values per regions ------------------------------------
-
-  # Make a parent string the same way as the types
-  parent_strings <- list(green_space_pct = NA)
-
-  region_vals <- variables_get_region_vals( #might got NA here!!!
-    scales = data_interpolated$scales,
-    vars = c("green_space_pct"),
-    types = types,
-    parent_strings = parent_strings,
-    breaks = with_breaks$q5_breaks_table)
-
+  # Data tibble -------------------------------------------------------------
+  
+  data <- data_construct(svm_data = scales_variables_modules$data,
+                         scales_data = data_interpolated$scales,
+                         unique_var = "green_space_pct",
+                         time_regex = "_\\d{4}$")
 
   # Variables table ---------------------------------------------------------
 
@@ -99,15 +74,12 @@ build_and_append_green_space_pct <- function(scales_variables_modules, DA_table,
       var_short = "Green space (%)",
       explanation = "the percentage of green space",
       exp_q5 = "_X_% of the area is covered by green space",
-      theme = "Environment",
+      theme = "Ecology",
       private = FALSE,
       pe_include = TRUE,
       parent_vec = NA,
-      region_values = region_vals$green_space_pct,
-      dates = with_breaks$avail_dates[["green_space_pct"]],
-      avail_df = data_interpolated$avail_df, 
-      breaks_q3 = with_breaks$q3_breaks_table[["green_space_pct"]],
-      breaks_q5 = with_breaks$q5_breaks_table[["green_space_pct"]],
+      dates = 2023,
+      avail_scale = data_interpolated$avail_scale, 
       source = "OpenStreetMap",
       interpolated = data_interpolated$interpolated_ref,
       rankings_chr = c("exceptionally sparse", "unusually sparse",
@@ -115,44 +87,21 @@ build_and_append_green_space_pct <- function(scales_variables_modules, DA_table,
                        "exceptionally dense")
     )
 
+  
+  # Possible sequences ------------------------------------------------------
+  
+  avail_scale_combinations <-
+    get_avail_scale_combinations(scales_sequences = scales_sequences,
+                                 avail_scales = data_interpolated$avail_scale)
 
+  
   # Modules table -----------------------------------------------------------
 
-  # Facultative. If a page is to be added accompanying this data, add modules
-  # description. Read the documentation of `add_module`. If no module is to be
-  # created, assign `scales_variables_modules$modules` to modules.
-  modules <- scales_variables_modules$modules
-
-  # modules <-
-  #   scales_variables_modules$modules |>
-  #   add_module(
-  #     id = "greenspace",
-  #     theme = "Environment",
-  #     nav_title = "Green Space",
-  #     title_text_title = "Toronto Green Space",
-  #     title_text_main = paste0(
-  #       "<p>Need work: Access to green space has critical impact on urban en",
-  #       "vironmental and health benefits. This module provides an estimation of",
-  #       " density or percentage of green spaces in Toronto."
-  #     ),
-  #     title_text_extra = paste0(
-  #       "<p>Need work: Data was obtained through OpenStreetMap."
-  #     ),
-  #     regions = unique(data_interpolated$regions),
-  #     metadata = TRUE,
-  #     dataset_info = paste0(),
-  #     var_left = "green_space_pct",
-  #     dates = "2023",
-  #     main_dropdown_title = "Data grouping", #could change to specific names
-  #     var_right = variables$var_code[variables$source == "Canadian census" &
-  #                                      !is.na(variables$parent_vec)]
-  #   )
-  
   modules <-
     scales_variables_modules$modules |>
     add_module(
       id = "greenspace",
-      theme = "Environment",
+      theme = "Ecology",
       nav_title = "Green space",
       title_text_title = "Green space",
       title_text_main = paste0(
@@ -181,22 +130,24 @@ build_and_append_green_space_pct <- function(scales_variables_modules, DA_table,
         "even though some areas are queried as green spaces, such as garden ",
         "and golf course, they might not be publicly accessible."
       ),
-      regions = unique(data_interpolated$regions),
       metadata = TRUE,
       dataset_info = paste0(""), 
       var_left = c("green_space_pct"), 
       dates = "2023", 
       main_dropdown_title = "Data grouping", 
       var_right = variables$var_code[variables$source == "Canadian census" &
-                                       !is.na(variables$parent_vec)]
+                                       !is.na(variables$parent_vec)],
+      default_var = "green_space_pct",
+      avail_scale_combinations = avail_scale_combinations
     )
 
   # Return ------------------------------------------------------------------
 
   return(list(
-    scales = with_breaks$scales,
+    scales = data_interpolated$scales,
     variables = variables,
-    modules = modules
+    modules = modules,
+    data = data
   ))
 
 }
